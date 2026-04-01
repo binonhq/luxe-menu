@@ -4,7 +4,7 @@ import HorizontalImageViewer from '~/components/HorizontalImageViewer.vue'
 import PageNavigator from '~/components/PageNavigator.vue'
 import VerticalImageViewer from '~/components/VerticalImageViewer.vue'
 import { useReaderPreferences } from '~/composables/useReaderPreferences'
-import { type LanguageCode, type MenuImagesByLanguage } from '~/types/reader'
+import type { LanguageCode, MenuImagesByLanguage } from '~/types/reader'
 
 const route = useRoute()
 const router = useRouter()
@@ -40,17 +40,16 @@ const totalPages = shallowRef(0)
 
 const { viewMode } = useReaderPreferences()
 
-const { data, status } = await useFetch<{ menus: MenuImagesByLanguage }>('/api/menus')
+const buildImagePaths = (languageCode: string, totalPages: number): string[] =>
+  Array.from({ length: totalPages }, (_, index) => `/menus/${languageCode}/${index + 1}.png`)
 
-const menus = computed<MenuImagesByLanguage>(() =>
-  data.value?.menus ?? {
-    EN: [],
-    VI: [],
-    CN: [],
-    KOR: [],
-    RUS: []
-  }
-)
+const menus = computed<MenuImagesByLanguage>(() => ({
+  EN: buildImagePaths('en', 15),
+  VI: buildImagePaths('vi', 15),
+  CN: buildImagePaths('cn', 15),
+  KOR: buildImagePaths('kor', 15),
+  RUS: buildImagePaths('rus', 15)
+}))
 
 const selectedLanguageImages = computed(() => menus.value[language.value] ?? [])
 const isHorizontalMode = computed(() => viewMode.value === 'horizontal')
@@ -189,12 +188,7 @@ const goNext = () => {
     <HeaderBar :language="language" :view-mode="viewMode" @update:language="language = $event"
       @update:view-mode="viewMode = $event" />
 
-    <div v-if="status === 'pending'"
-      class="mx-auto mt-20 rounded-2xl border border-[#e3d8cf] bg-white/75 px-8 py-6 text-[#7e6e62]">
-      Loading menu catalog...
-    </div>
-
-    <VerticalImageViewer v-else-if="viewMode === 'vertical'" :images="selectedLanguageImages"
+    <VerticalImageViewer v-if="viewMode === 'vertical'" :images="selectedLanguageImages"
       @update:total-pages="totalPages = $event" />
 
     <HorizontalImageViewer v-else :images="selectedLanguageImages" :current-page="currentPage"
