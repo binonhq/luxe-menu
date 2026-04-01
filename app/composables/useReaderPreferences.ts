@@ -4,7 +4,7 @@ import type { ViewMode } from '~/types/reader'
 const VIEW_MODE_KEY = 'luxe-menu:view-mode'
 
 export function useReaderPreferences() {
-  const viewMode = shallowRef<ViewMode>('vertical')
+  const viewMode = shallowRef<ViewMode>('horizontal')
 
   if (import.meta.client) {
     const storedMode = localStorage.getItem(VIEW_MODE_KEY)

@@ -1,8 +1,16 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const siteUrl = (import.meta.env.NUXT_PUBLIC_SITE_URL ?? '').trim().replace(/\/$/, '')
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  ssr: false,
+  ssr: true,
   devtools: { enabled: true },
+
+  runtimeConfig: {
+    public: {
+      siteUrl
+    }
+  },
 
   css: ['~/assets/css/main.css'],
 
@@ -16,7 +24,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Luxe Menu',
+      title: 'Luxe Hair Salon & Spa',
       meta: [
         {
           name: 'viewport',

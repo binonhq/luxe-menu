@@ -38,6 +38,16 @@ yarn dev
 bun run dev
 ```
 
+## Environment
+
+Set the public site URL to generate absolute social share metadata:
+
+```bash
+NUXT_PUBLIC_SITE_URL=https://your-domain.com
+```
+
+You can copy values from `.env.example`.
+
 ## Production
 
 Build the application for production:

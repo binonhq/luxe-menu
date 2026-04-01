@@ -8,6 +8,8 @@ import type { LanguageCode, MenuImagesByLanguage } from '~/types/reader'
 
 const route = useRoute()
 const router = useRouter()
+const runtimeConfig = useRuntimeConfig()
+const requestUrl = useRequestURL()
 
 const QUERY_TO_LANGUAGE: Record<string, LanguageCode> = {
   en: 'EN',
@@ -53,6 +55,78 @@ const menus = computed<MenuImagesByLanguage>(() => ({
 
 const selectedLanguageImages = computed(() => menus.value[language.value] ?? [])
 const isHorizontalMode = computed(() => viewMode.value === 'horizontal')
+const siteName = 'Luxe Hair Salon & Spa'
+
+const seoByLanguage: Record<LanguageCode, { title: string; description: string }> = {
+  EN: {
+    title: `${siteName} | Service Menu`,
+    description:
+      'Explore the Luxe Hair Salon & Spa service menu in an elegant digital reader with vertical and book-style modes.',
+  },
+  VI: {
+    title: `${siteName} | Bang gia dich vu`,
+    description:
+      'Kham pha bang gia dich vu Luxe Hair Salon & Spa voi trinh doc menu sang trong, ho tro che do doc doc va lat trang.',
+  },
+  CN: {
+    title: `${siteName} | 服务菜单`,
+    description:
+      '通过优雅的数字阅读器查看 Luxe Hair Salon & Spa 服务菜单，支持纵向滚动与翻页两种阅读模式。',
+  },
+  KOR: {
+    title: `${siteName} | 서비스 메뉴`,
+    description:
+      '세련된 디지털 리더로 Luxe Hair Salon & Spa의 서비스 메뉴를 확인하세요. 세로 보기와 페이지 넘김 모드를 모두 지원합니다.',
+  },
+  RUS: {
+    title: `${siteName} | Меню услуг`,
+    description:
+      'Изучайте меню услуг Luxe Hair Salon & Spa в элегантном цифровом ридере с вертикальным и книжным режимами просмотра.',
+  },
+}
+
+const localizedSeo = computed(() => seoByLanguage[language.value] ?? seoByLanguage.EN)
+
+const siteOrigin = computed(() => {
+  const configuredSiteUrl = String(runtimeConfig.public.siteUrl ?? '').trim().replace(/\/$/, '')
+  if (configuredSiteUrl) {
+    return configuredSiteUrl
+  }
+
+  return requestUrl.origin.replace(/\/$/, '')
+})
+
+const currentPathWithQuery = computed(() => route.fullPath.split('#')[0] || '/')
+
+const canonicalUrl = computed(() => `${siteOrigin.value}${currentPathWithQuery.value}`)
+
+const shareImageUrl = computed(() => {
+  return `${siteOrigin.value}/preview.png`
+})
+
+useSeoMeta({
+  title: () => localizedSeo.value.title,
+  description: () => localizedSeo.value.description,
+  ogType: 'website',
+  ogSiteName: siteName,
+  ogTitle: () => localizedSeo.value.title,
+  ogDescription: () => localizedSeo.value.description,
+  ogUrl: () => canonicalUrl.value,
+  ogImage: () => shareImageUrl.value,
+  twitterCard: 'summary_large_image',
+  twitterTitle: () => localizedSeo.value.title,
+  twitterDescription: () => localizedSeo.value.description,
+  twitterImage: () => shareImageUrl.value,
+})
+
+useHead({
+  link: [
+    {
+      rel: 'canonical',
+      href: canonicalUrl,
+    },
+  ],
+})
 
 const initialScrollStyles = {
   htmlOverflow: '',

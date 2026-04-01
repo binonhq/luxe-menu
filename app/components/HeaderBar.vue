@@ -12,8 +12,8 @@ const emit = defineEmits<{
 }>()
 
 const modes: Array<{ value: ViewMode; icon: string; label: string }> = [
+  { value: 'horizontal', icon: 'tabler:layout-columns', label: 'Horizontal mode' },
   { value: 'vertical', icon: 'tabler:layout-rows', label: 'Vertical mode' },
-  { value: 'horizontal', icon: 'tabler:layout-columns', label: 'Horizontal mode' }
 ]
 
 const languages: LanguageCode[] = ['EN', 'VI', 'CN', 'KOR', 'RUS']
