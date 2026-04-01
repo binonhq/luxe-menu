@@ -16,7 +16,7 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Luxe Menu Reader',
+      title: 'Luxe Menu',
       meta: [
         {
           name: 'viewport',
